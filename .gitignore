@@ -1,0 +1,51 @@
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+dist/
+.env
+.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode/
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.venv/
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Data & Artifacts
+domains.txt
+domains.csv
+*.sqlite3
+*.db
+*.sqlite
+*.log
+
+# OS/Editor
+*.swp
+*.swo
+.idea/
+*.bak
+*.tmp
+
+# Misc
+coverage/
+*.cover
+*.egg-info/
+.cache/
+*.pid
+
+# Local scripts output
+scripts/__pycache__/
+scripts/*.pyc
