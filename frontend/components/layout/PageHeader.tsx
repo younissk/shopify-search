@@ -13,8 +13,8 @@ interface PageHeaderProps {
 }
 
 const toneStyles: Record<NonNullable<PageHeaderProps["tone"]>, string> = {
-  default: "glass-panel p-8",
-  muted: "rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-8 py-6 shadow-sm",
+  default: "rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-7 shadow-sm",
+  muted: "rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-6",
 };
 
 export function PageHeader({
@@ -28,13 +28,11 @@ export function PageHeader({
 }: PageHeaderProps) {
   return (
     <header className={cn("relative overflow-hidden", toneStyles[tone], className)}>
-      <div className="pointer-events-none absolute -right-40 -top-40 h-72 w-72 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.28),transparent_70%)]" />
-      <div className="pointer-events-none absolute -left-32 top-1/2 h-72 w-72 -translate-y-1/2 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.22),transparent_70%)]" />
       <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-3xl space-y-4">
           {eyebrow ? <span className="pill-badge tracking-[0.18em]">{eyebrow}</span> : null}
           <div className="space-y-3">
-            <h1 className="text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+            <h1 className="break-words text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
               {title}
             </h1>
             {description ? (

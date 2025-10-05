@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, KeyboardEvent } from "react";
+import { useState, useRef, KeyboardEvent, useEffect } from "react";
 import { Loader2, Search, X } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ interface SearchBarProps {
   placeholder?: string;
   loading?: boolean;
   className?: string;
+  initialQuery?: string;
 }
 
 export default function SearchBar({
@@ -18,10 +19,15 @@ export default function SearchBar({
   placeholder = "Search products, brands, categories...",
   loading = false,
   className = "",
+  initialQuery = "",
 }: SearchBarProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
 
   const handleSearch = (value: string) => {
     setQuery(value);
@@ -42,7 +48,7 @@ export default function SearchBar({
   };
 
   return (
-    <div className={cn("relative mx-auto w-full max-w-2xl", className)}>
+    <div className={cn("relative mx-auto w-full", className)}>
       <div
         className={cn(
           "relative flex items-center rounded-full border border-[rgba(15,23,42,0.12)] bg-white shadow-sm transition-all duration-300",

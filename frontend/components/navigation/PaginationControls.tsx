@@ -31,7 +31,7 @@ export function PaginationControls({
     <nav
       aria-label="Pagination"
       className={cn(
-        "mt-12 flex flex-wrap items-center justify-center gap-4 rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white/90 px-6 py-4 shadow-sm",
+        "mt-12 flex flex-wrap items-center justify-center gap-4 rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-4 shadow-sm",
         className
       )}
     >

@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: #f5f7fb;
+    --background: #ffffff;
     --foreground: #0f172a;
     --muted: rgba(148, 163, 184, 0.18);
     --muted-foreground: rgba(71, 85, 105, 0.88);
@@ -60,25 +60,12 @@
   }
 
   body {
-    background: var(--gradient-page);
+    background: var(--background);
     color: var(--foreground);
     min-height: 100vh;
     position: relative;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background: var(--gradient-spotlight);
-    opacity: 0.65;
-    mix-blend-mode: soft-light;
-    filter: blur(120px);
-    transform: scale(1.05);
-    z-index: -1;
   }
 
   ::selection {
@@ -89,43 +76,19 @@
 
 @layer components {
   .surface-card {
-    background: var(--gradient-surface);
+    background: #ffffff;
     border-radius: var(--radius-xl);
-    border: 1px solid transparent;
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-soft);
     position: relative;
   }
 
-  .surface-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: var(--gradient-border);
-    -webkit-mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-
   .glass-panel {
-    background: var(--gradient-surface);
+    background: #ffffff;
     border-radius: var(--radius-xl);
-    border: 1px solid rgba(15, 23, 42, 0.04);
-    backdrop-filter: blur(var(--blur-medium));
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-medium);
     position: relative;
-  }
-
-  .glass-panel::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 1px solid rgba(37, 99, 235, 0.08);
-    pointer-events: none;
   }
 
   .pill-badge {
@@ -139,23 +102,6 @@
     font-size: 0.7rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-  }
-
-  .page-shell {
-    position: relative;
-    margin: 0 auto;
-    width: min(100%, 1200px);
-    padding: 3rem 1.25rem 4.5rem;
-  }
-
-  .page-shell::after {
-    content: "";
-    position: absolute;
-    inset: 18% -20% -15% -20%;
-    background: radial-gradient(120% 160% at 50% 0%, rgba(37, 99, 235, 0.12), transparent 65%);
-    filter: blur(60px);
-    opacity: 0.6;
-    z-index: -1;
   }
 
   .rich-text {

@@ -22,9 +22,9 @@ export function PageContainer({
   return (
     <Component
       className={cn(
-        "page-shell min-h-screen w-full",
+        "w-full",
         inset &&
-          "relative overflow-hidden rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white p-8 shadow-[var(--shadow-medium)]",
+          "relative overflow-hidden rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white p-6 shadow-[var(--shadow-medium)]",
         className
       )}
     >
