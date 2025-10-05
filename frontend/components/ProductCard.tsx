@@ -24,7 +24,9 @@ function formatPrice(value: string | number): string {
     }).format(numeric);
   }
 
-  return typeof value === "string" && value.length > 0 ? value : "Price unavailable";
+  return typeof value === "string" && value.length > 0
+    ? value
+    : "Price unavailable";
 }
 
 export default function ProductCard({
@@ -36,7 +38,8 @@ export default function ProductCard({
   className,
 }: ProductCardProps) {
   const formattedPrice = formatPrice(price);
-  const fallbackImage = "https://placehold.co/600x400/ffffff/e2e8f0?text=No+Image";
+  const fallbackImage =
+    "https://placehold.co/600x400/ffffff/e2e8f0?text=No+Image";
   const productHref = `/domain/${domain}/product/${id}`;
   const storeHref = `/domain/${domain}`;
   const displayDomain = shortenDomain(domain, 26);
@@ -44,7 +47,7 @@ export default function ProductCard({
   return (
     <article
       className={cn(
-        "group flex h-full flex-col overflow-hidden rounded-2xl border border-[rgba(15,23,42,0.1)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md",
+        "group flex h-full flex-col overflow-hidden rounded-2xl transition hover:-translate-y-1 ",
         className
       )}
       data-testid={`product-card-${id}`}
@@ -57,7 +60,7 @@ export default function ProductCard({
           src={image || fallbackImage}
           alt={title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03] rounded-tl-2xl rounded-br-2xl"
           sizes="(min-width: 1280px) 20vw, (min-width: 768px) 30vw, 100vw"
           priority={false}
         />
@@ -71,7 +74,9 @@ export default function ProductCard({
           >
             {displayDomain}
           </Link>
-          <span className="text-base font-semibold text-secondary">{formattedPrice}</span>
+          <span className="text-base font-semibold text-secondary">
+            {formattedPrice}
+          </span>
         </div>
 
         <Link
