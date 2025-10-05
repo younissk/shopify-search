@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 interface GalleryImage {
   image_id?: number | string;
   src: string;
-  alt?: string;
+  alt?: string | null;
 }
 
 interface ProductGalleryProps {
