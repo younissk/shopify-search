@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { performanceMonitor } from "@/lib/monitoring";
 import { useSearchParams } from "next/navigation";
 import { AlertCircle, Loader2, Search as SearchIcon } from "lucide-react";
 
 import ProductCard from "@/components/ProductCard";
 import { StateCard } from "@/components/feedback/StateCard";
+import { PerformanceMonitor } from "@/components/search/PerformanceMonitor";
 import {
   searchProducts,
   type ProductSearchResponse,
@@ -17,7 +19,8 @@ interface SearchExperienceProps {
   initialError?: string | null;
 }
 
-const DEBOUNCE_MS = 350;
+const DEBOUNCE_MS = 500;
+const MIN_QUERY_LENGTH = 2;
 
 export function SearchExperience({
   initialQuery,
@@ -35,6 +38,8 @@ export function SearchExperience({
   const lastSuccessfulQueryRef = useRef<string | null>(
     initialResults ? initialQuery.trim() : null
   );
+  const activeRequestRef = useRef<AbortController | null>(null);
+  const lastQueryRef = useRef<string>("");
 
   // Listen for URL changes from the app bar search
   useEffect(() => {
@@ -65,7 +70,7 @@ export function SearchExperience({
   useEffect(() => {
     const trimmed = debouncedQuery.trim();
 
-    if (!trimmed) {
+    if (!trimmed || trimmed.length < MIN_QUERY_LENGTH) {
       setLoading(false);
       setError(null);
       setResults(null);
@@ -73,45 +78,79 @@ export function SearchExperience({
     }
 
     if (lastSuccessfulQueryRef.current === trimmed) {
+      console.log(`⚡ [SEARCH_EXPERIENCE] Skipping duplicate query: "${trimmed}"`);
       return;
     }
 
+    // Cancel any previous requests
+    if (activeRequestRef.current) {
+      console.log(`⚡ [SEARCH_EXPERIENCE] Cancelling previous request for: "${lastQueryRef.current}"`);
+      activeRequestRef.current.abort();
+    }
+
     const controller = new AbortController();
+    activeRequestRef.current = controller;
+    lastQueryRef.current = trimmed;
+
+    const searchStartTime = performance.now();
+    console.log(`⚡ [SEARCH_EXPERIENCE] Starting search for: "${trimmed}" at ${new Date().toISOString()}`);
 
     const fetchResults = async () => {
+      console.log(`⚡ [SEARCH_EXPERIENCE] Setting loading state...`);
+      
       setLoading(true);
       setError(null);
 
+      const searchCallStartTime = performance.now();
+      console.log(`⚡ [SEARCH_EXPERIENCE] Calling searchProducts...`);
+      
       const { data, error: fetchError } = await searchProducts(
         { query: trimmed, page: 1 },
         { signal: controller.signal }
       );
 
+      const searchCallEndTime = performance.now();
+      const searchCallDuration = searchCallEndTime - searchCallStartTime;
+      console.log(`⚡ [SEARCH_EXPERIENCE] searchProducts call completed in ${searchCallDuration.toFixed(2)}ms`);
+
       if (controller.signal.aborted) {
+        console.log(`⚡ [SEARCH_EXPERIENCE] Search was aborted`);
         return;
       }
 
       if (fetchError?.aborted) {
+        console.log(`⚡ [SEARCH_EXPERIENCE] Search was aborted (fetchError)`);
         return;
       }
 
       if (fetchError) {
+        console.log(`⚡ [SEARCH_EXPERIENCE] Search error:`, fetchError.message);
         setError(fetchError.message);
         setResults(null);
         return;
       }
 
+      const stateUpdateStartTime = performance.now();
+      console.log(`⚡ [SEARCH_EXPERIENCE] Updating state with results...`);
+      
       setResults(data);
       lastSuccessfulQueryRef.current = trimmed;
+      
+      const stateUpdateEndTime = performance.now();
+      const stateUpdateDuration = stateUpdateEndTime - stateUpdateStartTime;
+      console.log(`⚡ [SEARCH_EXPERIENCE] State update completed in ${stateUpdateDuration.toFixed(2)}ms`);
     };
 
     fetchResults().finally(() => {
       if (!controller.signal.aborted) {
+        const totalTime = performance.now() - searchStartTime;
+        console.log(`⚡ [SEARCH_EXPERIENCE] Total search experience time: ${totalTime.toFixed(2)}ms (${(totalTime/1000).toFixed(2)}s)`);
         setLoading(false);
       }
     });
 
     return () => {
+      console.log(`⚡ [SEARCH_EXPERIENCE] Cleaning up search for: "${trimmed}"`);
       controller.abort();
     };
   }, [debouncedQuery]);
@@ -150,6 +189,12 @@ export function SearchExperience({
 
   return (
     <div className="space-y-6">
+      <PerformanceMonitor 
+        query={query}
+        loading={loading}
+        results={results}
+        error={error}
+      />
       <section className="space-y-4" aria-live="polite">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-semibold text-secondary">
@@ -207,16 +252,36 @@ export function SearchExperience({
             className="grid grid-cols-2 gap-6 sm:grid-cols-2 xl:grid-cols-3"
             data-testid="product-card-grid"
           >
-            {results?.items.map((product) => (
-              <ProductCard
-                key={`${product.domain}-${product.product_id}`}
-                title={product.title}
-                image={product.raw_json?.images?.[0]?.src ?? undefined}
-                price={product.raw_json?.variants?.[0]?.price ?? "N/A"}
-                domain={product.domain}
-                id={String(product.product_id)}
-              />
-            ))}
+            {(() => {
+              const renderStartTime = performance.now();
+              console.log(`🎨 [RENDER] Starting to render ${results?.items.length || 0} product cards`);
+              
+              const productCards = results?.items.map((product) => (
+                <ProductCard
+                  key={`${product.domain}-${product.product_id}`}
+                  title={product.title}
+                  image={product.raw_json?.images?.[0]?.src ?? undefined}
+                  price={product.raw_json?.variants?.[0]?.price ?? "N/A"}
+                  domain={product.domain}
+                  id={String(product.product_id)}
+                />
+              ));
+              
+              const renderEndTime = performance.now();
+              const renderDuration = renderEndTime - renderStartTime;
+              console.log(`🎨 [RENDER] Product cards rendered in ${renderDuration.toFixed(2)}ms`);
+              
+              performanceMonitor.recordMetric('render_duration', renderDuration, {
+                card_count: (results?.items.length || 0).toString()
+              });
+              
+              // Log performance summary every 10 renders
+              if ((results?.items.length || 0) % 10 === 0) {
+                performanceMonitor.logPerformanceSummary();
+              }
+              
+              return productCards;
+            })()}
           </div>
         ) : null}
       </section>

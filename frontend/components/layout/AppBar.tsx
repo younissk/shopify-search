@@ -3,7 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Menu, X, Home, Store, Compass } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  Compass,
+  Info,
+  Settings,
+} from "lucide-react";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,8 +29,8 @@ interface AppBarProps {
 
 const navigation = [
   { name: "Home", href: "/", icon: Home },
-  { name: "Search", href: "/search", icon: Search },
-  { name: "Stores", href: "/domains", icon: Store },
+  { name: "About", href: "/about", icon: Info },
+  { name: "Domain Requests", href: "/domain-requests", icon: Settings },
 ];
 
 export function AppBar({ className }: AppBarProps) {
@@ -65,7 +79,7 @@ export function AppBar({ className }: AppBarProps) {
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
-              
+
               return (
                 <Link
                   key={item.name}
@@ -82,6 +96,31 @@ export function AppBar({ className }: AppBarProps) {
                 </Link>
               );
             })}
+            
+            {/* Authentication */}
+            <div className="ml-4 flex items-center space-x-2">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button variant="ghost" size="sm">
+                    Sign In
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button size="sm">
+                    Sign Up
+                  </Button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton 
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-8 w-8"
+                    }
+                  }}
+                />
+              </SignedIn>
+            </div>
           </nav>
 
           {/* Mobile menu button */}
@@ -109,7 +148,7 @@ export function AppBar({ className }: AppBarProps) {
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon;
-                
+
                 return (
                   <Link
                     key={item.name}
@@ -127,6 +166,36 @@ export function AppBar({ className }: AppBarProps) {
                   </Link>
                 );
               })}
+              
+              {/* Mobile Authentication */}
+              <div className="border-t border-[var(--border)] pt-4 mt-4">
+                <SignedOut>
+                  <div className="space-y-2">
+                    <SignInButton mode="modal">
+                      <Button variant="ghost" className="w-full justify-start">
+                        Sign In
+                      </Button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                      <Button className="w-full justify-start">
+                        Sign Up
+                      </Button>
+                    </SignUpButton>
+                  </div>
+                </SignedOut>
+                <SignedIn>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-[var(--color-foreground-soft)]">Account</span>
+                    <UserButton 
+                      appearance={{
+                        elements: {
+                          avatarBox: "h-8 w-8"
+                        }
+                      }}
+                    />
+                  </div>
+                </SignedIn>
+              </div>
             </div>
           </div>
         )}
