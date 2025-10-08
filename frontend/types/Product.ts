@@ -108,4 +108,5 @@ export interface Product {
   variants?: ProductVariant[];
   body_html?: string;
   raw_json?: ProductRawJson;
+  embedding?: number[];
 }

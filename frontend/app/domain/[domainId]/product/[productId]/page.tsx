@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, Loader2, ShoppingCart } from "lucide-react";
+import { AlertCircle, Loader2, ShoppingCart, Sparkles } from "lucide-react";
 
 import { PageContainer } from "@/components/layout/PageContainer";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -15,7 +15,8 @@ import {
 import { ProductMetaBar } from "@/components/product/ProductMetaBar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getProduct } from "@/supabase/product";
+import { getProduct, getSimilarProducts } from "@/supabase/product";
+import ProductCard from "@/components/ProductCard";
 import { Product, ProductImage, ProductVariant } from "@/types/Product";
 
 interface ProductPageProps {
@@ -49,6 +50,8 @@ export default function ProductPage({ params }: ProductPageProps) {
     null
   );
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [similarProducts, setSimilarProducts] = useState<Product[] | null>(null);
+  const [loadingSimilar, setLoadingSimilar] = useState(true);
 
   useEffect(() => {
     const resolveParams = async () => {
@@ -64,7 +67,7 @@ export default function ProductPage({ params }: ProductPageProps) {
       return;
     }
 
-    const fetchProduct = async () => {
+    const fetchProductData = async () => {
       try {
         const fetchedProduct = await getProduct(
           resolvedParams.domainId,
@@ -76,14 +79,33 @@ export default function ProductPage({ params }: ProductPageProps) {
         if (fetchedProduct?.variants?.length) {
           setSelectedVariant(fetchedProduct.variants[0]);
         }
+
+        // Fetch similar products
+        if (fetchedProduct) {
+          const { data: similar, error: similarError } = await getSimilarProducts({
+            product_id: String(fetchedProduct.product_id), // Ensure product_id is a string
+            domain: fetchedProduct.domain,
+            k: 4
+          });
+          
+          console.log('Similar products response:', { similar, similarError });
+          
+          if (similarError) {
+            console.error('Error fetching similar products:', similarError);
+          } else if (similar) {
+            console.log('Setting similar products:', similar);
+            setSimilarProducts(similar);
+          }
+        }
       } catch (error) {
-        console.error("Error fetching product:", error);
+        console.error("Error fetching product data:", error);
       } finally {
         setLoading(false);
+        setLoadingSimilar(false);
       }
     };
 
-    fetchProduct();
+    fetchProductData();
   }, [resolvedParams]);
 
   const variants = useMemo<ProductVariant[]>(() => {
@@ -252,6 +274,37 @@ export default function ProductPage({ params }: ProductPageProps) {
       </section>
 
       <ProductMetaBar updatedAt={product.updated_at} domain={product.domain} />
+
+      {/* Similar Products Section */}
+      <section className="rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-8 shadow-sm space-y-6">
+        <div className="flex items-center gap-2">
+          <Sparkles className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-semibold text-foreground">Similar Products</h2>
+        </div>
+        
+        {loadingSimilar ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : Array.isArray(similarProducts) && similarProducts.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {similarProducts.map((similarProduct) => (
+              <ProductCard
+                key={similarProduct.product_id}
+                id={String(similarProduct.product_id)}
+                title={similarProduct.title}
+                price={similarProduct.variants?.[0]?.price ?? "N/A"}
+                domain={similarProduct.domain}
+                image={similarProduct.images?.[0]?.src}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[var(--radius-lg)] border border-[rgba(15,23,42,0.08)] bg-[rgba(248,250,252,0.8)] px-6 py-5 text-[var(--color-foreground-soft)]">
+            No similar products found at this time.
+          </div>
+        )}
+      </section>
     </PageContainer>
   );
 }

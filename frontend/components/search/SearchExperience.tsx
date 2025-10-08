@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AlertCircle, Loader2, Search as SearchIcon } from "lucide-react";
 
 import ProductCard from "@/components/ProductCard";
@@ -9,8 +10,6 @@ import {
   searchProducts,
   type ProductSearchResponse,
 } from "@/lib/productSearch";
-
-import { SearchPanel } from "./SearchPanel";
 
 interface SearchExperienceProps {
   initialQuery: string;
@@ -25,6 +24,7 @@ export function SearchExperience({
   initialResults,
   initialError = null,
 }: SearchExperienceProps) {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<ProductSearchResponse | null>(
     initialResults
@@ -35,6 +35,14 @@ export function SearchExperience({
   const lastSuccessfulQueryRef = useRef<string | null>(
     initialResults ? initialQuery.trim() : null
   );
+
+  // Listen for URL changes from the app bar search
+  useEffect(() => {
+    const urlQuery = searchParams.get("query") || "";
+    if (urlQuery !== query) {
+      setQuery(urlQuery);
+    }
+  }, [searchParams, query]);
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -142,13 +150,6 @@ export function SearchExperience({
 
   return (
     <div className="space-y-6">
-      <SearchPanel
-        initialQuery={initialQuery}
-        query={query}
-        onQueryChange={setQuery}
-        loading={loading}
-      />
-
       <section className="space-y-4" aria-live="polite">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-semibold text-secondary">

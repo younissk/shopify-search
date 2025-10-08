@@ -316,15 +316,9 @@ class SupabaseWriter:
         image_rows = list(image_rows_dict.values())
         for chunk in self._chunked(image_rows):
             self._upsert("images", chunk, on_conflict="domain,image_id")
-        for chunk in self._chunked(option_rows):
-            # Allow conflict target to use either explicit key or a composite index
-            # Insert options without upsert since they're immutable per product
-            self._insert("options", chunk)
         for chunk in self._chunked(option_value_rows):
             self._upsert("option_values", chunk,
                          on_conflict="domain,product_id,option_name,position")
-        for chunk in self._chunked(snapshot_rows):
-            self._insert("product_snapshots", chunk)
 
 
 # Initialize a global writer (lazy-disabled if env is missing)

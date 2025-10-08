@@ -51,15 +51,15 @@ export default function SearchBar({
     <div className={cn("relative mx-auto w-full", className)}>
       <div
         className={cn(
-          "relative flex items-center rounded-full border border-[rgba(15,23,42,0.12)] bg-white shadow-sm transition-all duration-300",
+          "relative flex items-center rounded-lg border bg-white/80 backdrop-blur-sm transition-all duration-200",
           focused
-            ? "border-primary/50 shadow-lg ring-2 ring-primary/20"
-            : "hover:border-[rgba(15,23,42,0.2)]"
+            ? "border-primary/40 bg-white shadow-md ring-1 ring-primary/20"
+            : "border-[rgba(15,23,42,0.08)] hover:border-[rgba(15,23,42,0.15)] hover:bg-white"
         )}
       >
         <Search
           className={cn(
-            "pointer-events-none ml-4 h-5 w-5 text-muted-foreground transition-colors",
+            "pointer-events-none ml-3 h-4 w-4 text-muted-foreground transition-colors",
             focused && "text-primary"
           )}
         />
@@ -71,24 +71,24 @@ export default function SearchBar({
           onBlur={() => setFocused(false)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="h-14 flex-1 border-0 bg-transparent px-4 text-base font-medium focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="h-10 flex-1 border-0 bg-transparent px-3 text-sm font-normal focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground"
           data-testid="search-input"
         />
-        <div className="flex items-center gap-2 pr-4">
+        <div className="flex items-center gap-1 pr-3">
           {loading && (
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            <span className="flex h-6 w-6 items-center justify-center rounded bg-primary/10">
+              <Loader2 className="h-3 w-3 animate-spin text-primary" />
             </span>
           )}
           {query && !loading && (
             <button
               type="button"
               onClick={handleClear}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-[rgba(15,23,42,0.05)] text-[var(--color-foreground-soft)] transition hover:bg-primary/10 hover:text-primary"
+              className="flex h-6 w-6 items-center justify-center rounded bg-[rgba(15,23,42,0.05)] text-[var(--color-foreground-soft)] transition hover:bg-primary/10 hover:text-primary"
               aria-label="Clear search"
               onMouseDown={(event) => event.preventDefault()}
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3" />
             </button>
           )}
         </div>

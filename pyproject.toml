@@ -11,4 +11,9 @@ dependencies = [
     "tenacity>=8.2.3",
     "supabase>=2.6.0",
     "python-dotenv>=1.0.1",
+    "huggingface>=0.0.1",
+    "huggingface-hub>=0.35.3",
+    "numpy>=2.3.3",
+    "sentence-transformers==3.0.1",
+    "psycopg2-binary>=2.9.10",
 ]
