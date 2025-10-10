@@ -105,7 +105,7 @@ export function SearchExperience({
       console.log(`⚡ [SEARCH_EXPERIENCE] Calling searchProducts...`);
       
       const { data, error: fetchError } = await searchProducts(
-        { query: trimmed, page: 1 },
+        { query: trimmed },
         { signal: controller.signal }
       );
 

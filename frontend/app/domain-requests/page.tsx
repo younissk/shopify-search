@@ -6,71 +6,15 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { StateCard } from "@/components/feedback/StateCard";
 import {
-  Store,
   Plus,
   Minus,
-  Mail,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  ExternalLink,
-  Info,
 } from "lucide-react";
 
 type RequestType = "add" | "remove";
 
-interface DomainRequest {
-  id: string;
-  domain: string;
-  type: RequestType;
-  reason: string;
-  status: "pending" | "approved" | "rejected";
-  submittedAt: string;
-}
 
-const mockRequests: DomainRequest[] = [
-  {
-    id: "1",
-    domain: "example-store.myshopify.com",
-    type: "add",
-    reason: "Popular electronics store with unique products",
-    status: "pending",
-    submittedAt: "2024-01-10",
-  },
-  {
-    id: "2",
-    domain: "old-store.myshopify.com",
-    type: "remove",
-    reason: "Store is no longer active and products are outdated",
-    status: "approved",
-    submittedAt: "2024-01-05",
-  },
-];
-
-const guidelines = [
-  {
-    icon: Store,
-    title: "Domain Requirements",
-    description:
-      "Must be a valid Shopify store with active products and proper SSL certificate.",
-  },
-  {
-    icon: Clock,
-    title: "Processing Time",
-    description:
-      "Domain requests are typically processed within 2-3 business days.",
-  },
-  {
-    icon: Info,
-    title: "Review Process",
-    description:
-      "We review each request to ensure quality and relevance to our search index.",
-  },
-];
 
 export default function DomainRequestsPage() {
   const [requestType, setRequestType] = useState<RequestType>("add");
@@ -94,30 +38,6 @@ export default function DomainRequestsPage() {
     setReason("");
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "pending":
-        return (
-          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-            Pending
-          </Badge>
-        );
-      case "approved":
-        return (
-          <Badge variant="secondary" className="bg-green-100 text-green-800">
-            Approved
-          </Badge>
-        );
-      case "rejected":
-        return (
-          <Badge variant="secondary" className="bg-red-100 text-red-800">
-            Rejected
-          </Badge>
-        );
-      default:
-        return <Badge variant="secondary">Unknown</Badge>;
-    }
-  };
 
   if (submitted) {
     return (

@@ -25,7 +25,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     
     const { data, error } = await searchProducts({
       query: trimmedInitialQuery,
-      page: 1,
     });
 
     const serverSearchEndTime = performance.now();

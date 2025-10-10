@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { ProductSearchResponse } from "@/lib/productSearch";
 
 interface PerformanceMonitorProps {
   query: string;
   loading: boolean;
-  results: any;
+  results: ProductSearchResponse | null;
   error: string | null;
 }
 
