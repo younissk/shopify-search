@@ -29,8 +29,11 @@ export default function SearchBar({
     setQuery(initialQuery);
   }, [initialQuery]);
 
-  const handleSearch = (value: string) => {
+  const handleInputChange = (value: string) => {
     setQuery(value);
+  };
+
+  const handleSearch = (value: string) => {
     onSearch?.(value);
   };
 
@@ -41,7 +44,9 @@ export default function SearchBar({
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Escape") {
+    if (event.key === "Enter") {
+      handleSearch(query);
+    } else if (event.key === "Escape") {
       handleClear();
       inputRef.current?.blur();
     }
@@ -66,7 +71,7 @@ export default function SearchBar({
         <Input
           ref={inputRef}
           value={query}
-          onChange={(event) => handleSearch(event.currentTarget.value)}
+          onChange={(event) => handleInputChange(event.currentTarget.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           onKeyDown={handleKeyDown}
@@ -81,15 +86,27 @@ export default function SearchBar({
             </span>
           )}
           {query && !loading && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="flex h-6 w-6 items-center justify-center rounded bg-[rgba(15,23,42,0.05)] text-[var(--color-foreground-soft)] transition hover:bg-primary/10 hover:text-primary"
-              aria-label="Clear search"
-              onMouseDown={(event) => event.preventDefault()}
-            >
-              <X className="h-3 w-3" />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => handleSearch(query)}
+                className="flex h-6 w-6 items-center justify-center rounded bg-primary/10 text-primary transition hover:bg-primary/20"
+                aria-label="Search"
+                data-testid="search-button"
+              >
+                <Search className="h-3 w-3" />
+              </button>
+              <button
+                type="button"
+                onClick={handleClear}
+                className="flex h-6 w-6 items-center justify-center rounded bg-[rgba(15,23,42,0.05)] text-[var(--color-foreground-soft)] transition hover:bg-primary/10 hover:text-primary"
+                aria-label="Clear search"
+                data-testid="clear-button"
+                onMouseDown={(event) => event.preventDefault()}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </>
           )}
         </div>
       </div>

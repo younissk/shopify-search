@@ -1,4 +1,4 @@
-import { Product } from "@/types/Product";
+// Product type imported for reference but SearchProduct is used for search results
 
 export type ProductSearchSort = "rank" | "recent";
 
@@ -10,8 +10,17 @@ export interface ProductSearchParams {
   sort?: ProductSearchSort;
 }
 
+// Flattened product structure returned by the search endpoint
+export interface SearchProduct {
+  domain: string;
+  product_id: number;
+  title: string;
+  src: string; // Flattened from raw_json.images[0].src
+  price: string; // Flattened from raw_json.variants[0].price
+}
+
 export interface ProductSearchResponse {
-  items: Product[];
+  items: SearchProduct[];
   total: number;
   hasMore: boolean;
   nextCursor: string | null;
@@ -29,7 +38,7 @@ const DEFAULT_SORT: ProductSearchSort = "rank";
 
 const SEARCH_ENDPOINT =
   process.env.NEXT_PUBLIC_PRODUCTS_SEARCH_URL ??
-  "https://djvnxdkpoxfxabplpjei.supabase.co/functions/v1/products-semantic-search";
+  "https://djvnxdkpoxfxabplpjei.supabase.co/functions/v1/products-search";
 
 function buildQueryString(params: ProductSearchParams): string {
   const searchParams = new URLSearchParams();
@@ -218,6 +227,8 @@ export async function searchProducts(
       total_results: payload.total.toString(),
       cached: 'false'
     });
+
+    console.log(`🔍 [SEARCH] Payload:`, payload);
     
     return { data: payload, error: null };
     },

@@ -260,8 +260,8 @@ export function SearchExperience({
                 <ProductCard
                   key={`${product.domain}-${product.product_id}`}
                   title={product.title}
-                  image={product.raw_json?.images?.[0]?.src ?? undefined}
-                  price={product.raw_json?.variants?.[0]?.price ?? "N/A"}
+                  image={product.src ?? undefined}
+                  price={product.price ?? "N/A"}
                   domain={product.domain}
                   id={String(product.product_id)}
                 />
