@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StateCard } from "@/components/feedback/StateCard";
+import { DomainRequestService } from "@/lib/domainRequestService";
 import {
   Plus,
   Minus,
@@ -14,28 +15,66 @@ import {
 
 type RequestType = "add" | "remove";
 
-
-
 export default function DomainRequestsPage() {
   const [requestType, setRequestType] = useState<RequestType>("add");
   const [domain, setDomain] = useState("");
+  const [requesterName, setRequesterName] = useState("");
+  const [requesterEmail, setRequesterEmail] = useState("");
   const [reason, setReason] = useState("");
+  const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!domain.trim() || !reason.trim()) return;
 
+    // Validate email if provided
+    if (requesterEmail.trim() && !isValidEmail(requesterEmail.trim())) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const result = requestType === "add" 
+        ? await DomainRequestService.requestAddDomain(
+            domain.trim(),
+            requesterName.trim() || undefined,
+            requesterEmail.trim() || undefined,
+            reason.trim()
+          )
+        : await DomainRequestService.requestRemoveDomain(
+            domain.trim(),
+            requesterName.trim() || undefined,
+            requesterEmail.trim() || undefined,
+            reason.trim()
+          );
 
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setDomain("");
-    setReason("");
+      if (result.error) {
+        setError(result.error);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Success - reset form and show success state
+      setSubmitted(true);
+      setDomain("");
+      setRequesterName("");
+      setRequesterEmail("");
+      setReason("");
+      setNotes("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
+      setIsSubmitting(false);
+    }
   };
 
 
@@ -104,6 +143,49 @@ export default function DomainRequestsPage() {
               </div>
             </div>
 
+            {/* Requester Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label
+                  htmlFor="requesterName"
+                  className="text-sm font-medium text-secondary"
+                >
+                  Your Name
+                </label>
+                <Input
+                  id="requesterName"
+                  type="text"
+                  placeholder="John Doe"
+                  value={requesterName}
+                  onChange={(e) => setRequesterName(e.target.value)}
+                  className="w-full"
+                />
+                <p className="text-xs text-[var(--color-foreground-soft)]">
+                  Optional - helps us contact you if needed
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label
+                  htmlFor="requesterEmail"
+                  className="text-sm font-medium text-secondary"
+                >
+                  Your Email
+                </label>
+                <Input
+                  id="requesterEmail"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={requesterEmail}
+                  onChange={(e) => setRequesterEmail(e.target.value)}
+                  className="w-full"
+                />
+                <p className="text-xs text-[var(--color-foreground-soft)]">
+                  Optional - for status updates
+                </p>
+              </div>
+            </div>
+
             {/* Domain Input */}
             <div className="space-y-2">
               <label
@@ -146,10 +228,44 @@ export default function DomainRequestsPage() {
               />
             </div>
 
+            {/* Additional Notes */}
+            <div className="space-y-2">
+              <label
+                htmlFor="notes"
+                className="text-sm font-medium text-secondary"
+              >
+                Additional Notes
+              </label>
+              <textarea
+                id="notes"
+                placeholder="Any additional information that might be helpful..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full min-h-[80px] px-3 py-2 border border-[rgba(15,23,42,0.08)] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              />
+              <p className="text-xs text-[var(--color-foreground-soft)]">
+                Optional - any extra details about your request
+              </p>
+            </div>
+
+            {/* Error Display */}
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">
+                  <strong>Error:</strong> {error}
+                </p>
+              </div>
+            )}
+
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isSubmitting || !domain.trim() || !reason.trim()}
+              disabled={
+                isSubmitting || 
+                !domain.trim() || 
+                !reason.trim() ||
+                (requesterEmail.trim() !== "" && !isValidEmail(requesterEmail.trim()))
+              }
               className="w-full"
             >
               {isSubmitting

@@ -28,9 +28,7 @@ interface AppBarProps {
 }
 
 const navigation = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "About", href: "/about", icon: Info },
-  { name: "Domain Requests", href: "/domain-requests", icon: Settings },
+  { name: "Domains", href: "/domains", icon: Settings },
 ];
 
 export function AppBar({ className }: AppBarProps) {
