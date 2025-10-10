@@ -182,6 +182,69 @@ class SupabaseWriter:
     def _chunked(self, rows: List[Dict[str, Any]]) -> List[List[Dict[str, Any]]]:
         return [rows[i:i + self.batch_size] for i in range(0, len(rows), self.batch_size)]
 
+    def upsert_domain(self, domain: str, products: List[Dict[str, Any]], error: Optional[str] = None) -> None:
+        """Upsert domain record with statistics and scraping status."""
+        if not self.is_enabled():
+            return
+        
+        fetched_at = datetime.now(UTC).isoformat()
+        
+        # Calculate domain statistics
+        product_count = len(products)
+        vendors = set()
+        product_types = set()
+        prices = []
+        
+        for product in products:
+            # Collect vendors
+            vendor = product.get("vendor")
+            if vendor:
+                vendors.add(vendor)
+            
+            # Collect product types
+            product_type = product.get("product_type")
+            if product_type:
+                product_types.add(product_type)
+            
+            # Collect prices from variants
+            variants = product.get("variants", [])
+            for variant in variants:
+                price_str = variant.get("price")
+                if price_str:
+                    try:
+                        price = float(price_str)
+                        prices.append(price)
+                    except (ValueError, TypeError):
+                        pass
+        
+        # Calculate price range
+        price_range_min = min(prices) if prices else None
+        price_range_max = max(prices) if prices else None
+        
+        # Determine scraping status
+        scraping_status = "active" if error is None else "failed"
+        
+        domain_data = {
+            "domain": domain,
+            "product_count": product_count,
+            "vendor_count": len(vendors),
+            "product_types": list(product_types) if product_types else None,
+            "price_range_min": price_range_min,
+            "price_range_max": price_range_max,
+            "last_fetched_at": fetched_at if error is None else None,
+            "scraping_status": scraping_status,
+            "last_scrape_error": error,
+            "fetch_attempt_count": 1,  # Will be incremented by database trigger
+            "successful_fetch_count": 1 if error is None else 0,
+            "updated_at": fetched_at,
+        }
+        
+        try:
+            self._upsert("domains", [domain_data], on_conflict="domain")
+            print(f"Updated domain record for {domain}: {product_count} products, {len(vendors)} vendors")
+        except Exception as e:
+            print(f"Error updating domain record for {domain}: {e}")
+
     def upsert_products(self, products: List[Dict[str, Any]], domain: str) -> None:
         if not self.is_enabled() or not products:
             return
@@ -387,6 +450,8 @@ def fetch_domain_products(domain: str, stats: ScrapingStats) -> None:
                 print(
                     f"Attempting to persist {len(all_domain_products)} products for {domain}...")
                 SUPABASE_WRITER.upsert_products(all_domain_products, domain)
+                # Update domain record with statistics
+                SUPABASE_WRITER.upsert_domain(domain, all_domain_products)
                 print(
                     f"Successfully persisted {len(all_domain_products)} products for {domain} to Supabase")
         except Exception as persist_err:
@@ -405,13 +470,29 @@ def fetch_domain_products(domain: str, stats: ScrapingStats) -> None:
             # Log full error details for debugging
             print(
                 f"Full error context for {domain}: {type(persist_err).__name__}: {error_msg}")
+            
+            # Update domain record with error status
+            if SUPABASE_WRITER.is_enabled():
+                SUPABASE_WRITER.upsert_domain(domain, [], error_msg)
 
     except requests.exceptions.RequestException as e:
-        stats.add_failed_domain(domain, f"Request failed: {str(e)}")
+        error_msg = f"Request failed: {str(e)}"
+        stats.add_failed_domain(domain, error_msg)
+        # Update domain record with error status
+        if SUPABASE_WRITER.is_enabled():
+            SUPABASE_WRITER.upsert_domain(domain, [], error_msg)
     except json.JSONDecodeError as e:
-        stats.add_failed_domain(domain, f"Invalid JSON: {str(e)}")
+        error_msg = f"Invalid JSON: {str(e)}"
+        stats.add_failed_domain(domain, error_msg)
+        # Update domain record with error status
+        if SUPABASE_WRITER.is_enabled():
+            SUPABASE_WRITER.upsert_domain(domain, [], error_msg)
     except Exception as e:
-        stats.add_failed_domain(domain, f"Unexpected error: {str(e)}")
+        error_msg = f"Unexpected error: {str(e)}"
+        stats.add_failed_domain(domain, error_msg)
+        # Update domain record with error status
+        if SUPABASE_WRITER.is_enabled():
+            SUPABASE_WRITER.upsert_domain(domain, [], error_msg)
     finally:
         stats.rate_limit_semaphore.release()
 
