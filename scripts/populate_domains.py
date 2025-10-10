@@ -25,13 +25,7 @@ except ImportError:
 load_dotenv()
 
 with open('domains.txt', 'r') as f:
-    domains = []
-    for line in f:
-        domain = line.strip()
-        if domain:  # Skip empty lines
-            domains.append(domain)
-        if domain == 'thesoapopera.com':
-            break  # Stop processing after thesoapopera.com
+    domains = [line.strip() for line in f if line.strip()]
 
 
 class DomainPopulator:
@@ -149,7 +143,7 @@ class DomainPopulator:
                 **domain_stats,
                 'created_at': datetime.now(UTC).isoformat(),
                 'updated_at': datetime.now(UTC).isoformat(),
-                'scraping_status': 'active' if domain_stats['product_count'] > 0 else 'pending',
+                'scraping_status': 'pending',
                 'fetch_attempt_count': 0,
                 'successful_fetch_count': 1 if domain_stats['product_count'] > 0 else 0,
             }
