@@ -52,7 +52,7 @@ export function ProductGallery({
         </button>
       
       {images.length > 1 ? (
-        <div className="absolute bottom-4 left-4 right-4 flex gap-2 overflow-x-auto pb-1">
+        <div className="absolute bottom-0 left-0 right-0 flex gap-2 overflow-x-auto pb-1">
           {images.map((image, index) => {
             const isActive = index === currentIndex;
 

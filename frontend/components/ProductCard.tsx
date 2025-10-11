@@ -63,11 +63,6 @@ export default function ProductCard({
           priority={false}
         />
 
-        {/* Bookmark button - top left */}
-        <div className="absolute top-2 left-2 z-10">
-          <BookmarkButton productId={id} domain={domain} size="sm" />
-        </div>
-
         {/* Domain overlay - bottom left */}
         <span
           className="absolute bottom-0 left-0 bg-[var(--primary)] border-2 border-dashed border-[var(--background)] px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-opacity hover:bg-black/80"
