@@ -1,5 +1,6 @@
 import { AlertCircle, Store } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { DomainCard } from "@/components/DomainCard";
 import { PageContainer } from "@/components/layout/PageContainer";
@@ -7,6 +8,20 @@ import { PaginationControls } from "@/components/navigation/PaginationControls";
 import { StateCard } from "@/components/feedback/StateCard";
 import { Button } from "@/components/ui/button";
 import { getDomains, DOMAINS_PER_PAGE } from "@/supabase/domain";
+
+export const metadata: Metadata = {
+  title: "Browse Stores",
+  description: "Discover thousands of Shopify stores indexed on Shopify Search. Browse by product count and explore unique merchants from around the world.",
+  openGraph: {
+    title: "Browse Stores - Shopify Search",
+    description: "Discover thousands of Shopify stores indexed on Shopify Search.",
+  },
+  twitter: {
+    card: "summary",
+    title: "Browse Stores - Shopify Search",
+    description: "Discover thousands of Shopify stores indexed on Shopify Search.",
+  },
+};
 
 interface DomainsPageProps {
   searchParams: {

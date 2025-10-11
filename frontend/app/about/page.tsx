@@ -2,6 +2,21 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "Learn about Shopify Search - a portfolio project showcasing product discovery across Shopify stores. See our changelog and get in touch.",
+  openGraph: {
+    title: "About - Shopify Search",
+    description: "Learn about Shopify Search - a portfolio project showcasing product discovery across Shopify stores.",
+  },
+  twitter: {
+    card: "summary",
+    title: "About - Shopify Search",
+    description: "Learn about Shopify Search - a portfolio project showcasing product discovery across Shopify stores.",
+  },
+};
 
 const changelog = [
   {
@@ -28,12 +43,21 @@ const changelog = [
 export default function AboutPage() {
   return (
     <PageContainer className="space-y-12">
-      <p>I just kinda made this as a portfolio project. Dont sue me please.</p>
-      <p>
-        But also because Im kinda sick of using Amazon to buy things and want to
-        support smaller customers. So in a really dumb way this kinda rivals
-        amazon, but not really.
-      </p>
+      <div className="space-y-6">
+        <h1 className="text-4xl font-bold text-primary">About Shopify Search</h1>
+        <div className="space-y-4 text-lg text-[var(--color-foreground-soft)]">
+          <p>I just kinda made this as a portfolio project. Don't sue me please.</p>
+          <p>
+            But also because I'm kinda sick of using Amazon to buy things and want to
+            support smaller customers. So in a really dumb way this kinda rivals
+            Amazon, but not really.
+          </p>
+          <p>
+            This project showcases full-text search, semantic search using SentenceBERT embeddings,
+            and aggregation of products from over 1,300 Shopify stores with 580,000+ products indexed.
+          </p>
+        </div>
+      </div>
 
       {/* Changelog Section */}
       <section className="space-y-6">

@@ -1,5 +1,6 @@
 import { AlertCircle, PackageSearch } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import ProductCard from "@/components/ProductCard";
 import { PageContainer } from "@/components/layout/PageContainer";
@@ -15,6 +16,26 @@ interface DomainPageProps {
   };
   searchParams: {
     page?: string;
+  };
+}
+
+export async function generateMetadata({ params }: DomainPageProps): Promise<Metadata> {
+  const { domainId } = params;
+  const decodedDomain = decodeURIComponent(domainId);
+
+  return {
+    title: `${decodedDomain} - Store Products`,
+    description: `Browse products from ${decodedDomain}. Discover their catalog, compare prices, and find unique items from this Shopify store.`,
+    openGraph: {
+      title: `${decodedDomain} - Store Products`,
+      description: `Browse products from ${decodedDomain} on Shopify Search.`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: `${decodedDomain} - Store Products`,
+      description: `Browse products from ${decodedDomain} on Shopify Search.`,
+    },
   };
 }
 

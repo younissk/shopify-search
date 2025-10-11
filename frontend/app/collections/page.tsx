@@ -2,12 +2,27 @@ import { redirect } from "next/navigation";
 import { getCurrentUserId } from "@/lib/auth";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Button } from "@/components/ui/button";
 import { getUserCollections } from "@/supabase/collection";
 import { CollectionCard } from "@/components/collection/CollectionCard";
 import { getAuthenticatedSupabaseClient } from "@/supabase/server";
+
+export const metadata: Metadata = {
+  title: "My Collections",
+  description: "Organize and save your favorite products in collections. Create private collections or share them with others.",
+  openGraph: {
+    title: "My Collections - Shopify Search",
+    description: "Organize and save your favorite products in collections.",
+  },
+  twitter: {
+    card: "summary",
+    title: "My Collections - Shopify Search",
+    description: "Organize and save your favorite products in collections.",
+  },
+};
 
 export default async function CollectionsPage() {
   const userId = await getCurrentUserId();

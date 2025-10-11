@@ -1,12 +1,48 @@
 import { PageContainer } from "@/components/layout/PageContainer";
 import { SearchExperience } from "@/components/search/SearchExperience";
 import { searchProducts } from "@/lib/productSearch";
+import type { Metadata } from "next";
 
 type SearchPageProps = {
   searchParams?: Promise<{
     query?: string;
   }>;
 };
+
+export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const query = resolvedSearchParams?.query || "";
+  
+  if (query.trim()) {
+    return {
+      title: `Search results for "${query}"`,
+      description: `Find "${query}" products across thousands of Shopify stores. Compare prices, discover similar items, and shop from trusted merchants.`,
+      openGraph: {
+        title: `Search results for "${query}" - Shopify Search`,
+        description: `Find "${query}" products across thousands of Shopify stores.`,
+      },
+      twitter: {
+        card: "summary",
+        title: `Search results for "${query}" - Shopify Search`,
+        description: `Find "${query}" products across thousands of Shopify stores.`,
+      },
+    };
+  }
+
+  return {
+    title: "Search Products",
+    description: "Search across thousands of products from trusted Shopify stores. Discover, compare, and find exactly what you're looking for.",
+    openGraph: {
+      title: "Search Products - Shopify Search",
+      description: "Search across thousands of products from trusted Shopify stores.",
+    },
+    twitter: {
+      card: "summary",
+      title: "Search Products - Shopify Search",
+      description: "Search across thousands of products from trusted Shopify stores.",
+    },
+  };
+}
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const serverStartTime = performance.now();

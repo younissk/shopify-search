@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { AlertCircle, Loader2, Sparkles } from "lucide-react";
+import type { Metadata } from "next";
 
 import { PageContainer } from "@/components/layout/PageContainer";
 import { StateCard } from "@/components/feedback/StateCard";
@@ -19,6 +20,8 @@ interface ProductPageProps {
     domainId: string;
   }>;
 }
+
+// Note: This is a client component, so metadata generation happens in a wrapper
 
 function formatPrice(price: string | null | undefined): string {
   const numericPrice = Number.parseFloat(String(price));
