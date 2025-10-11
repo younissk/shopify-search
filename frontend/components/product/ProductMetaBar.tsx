@@ -29,7 +29,7 @@ export function ProductMetaBar({ updatedAt, domain }: ProductMetaBarProps) {
         </span>
       </div>
       <Link
-        href={`/domain/${domain}`}
+        href={`/domains/${domain}`}
         className="inline-flex items-center rounded-full border border-[rgba(15,23,42,0.12)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] transition hover:border-primary/40 hover:text-primary"
       >
         View more from this store

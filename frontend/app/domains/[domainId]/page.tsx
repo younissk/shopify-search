@@ -40,7 +40,7 @@ export default async function DomainPage({
           description="Something went wrong while reaching the store catalogue. Please try again in a moment."
           action={
             <Button variant="outline" asChild>
-              <Link href={`/domain/${domainId}`}>Refresh page</Link>
+              <Link href={`/domains/${domainId}`}>Refresh page</Link>
             </Button>
           }
         />
@@ -124,7 +124,7 @@ export default async function DomainPage({
         currentPage={currentPage}
         totalPages={totalPages}
         hasNextPage={hasMore}
-        makeHref={(page) => `/domain/${domainId}?page=${page}`}
+        makeHref={(page) => `/domains/${domainId}?page=${page}`}
       />
     </PageContainer>
   );
