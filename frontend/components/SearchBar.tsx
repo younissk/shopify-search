@@ -55,12 +55,9 @@ export default function SearchBar({
   return (
     <div className={cn("relative mx-auto w-full", className)}>
       <div
-        className={cn(
-          "relative flex items-center rounded-lg border bg-white/80 backdrop-blur-sm transition-all duration-200",
-          focused
-            ? "border-primary/40 bg-white shadow-md ring-1 ring-primary/20"
-            : "border-[rgba(15,23,42,0.08)] hover:border-[rgba(15,23,42,0.15)] hover:bg-white"
-        )}
+        className={
+          "relative flex items-center rounded-sm border-2 border-dashed border-[#824026] bg-[var(--primary)] backdrop-blur-sm transition-all duration-200"
+        }
       >
         <Search
           className={cn(

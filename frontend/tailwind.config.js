@@ -90,7 +90,8 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", ...fontFamily.sans],
+        hanalei: ["var(--font-hanalei)", ...fontFamily.sans],
+        sans: ["var(--font-hanalei)", ...fontFamily.sans],
         mono: [...fontFamily.mono],
       },
     },

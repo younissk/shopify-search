@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Hanalei_Fill } from "next/font/google";
 import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { AppShell } from "@/components/layout/AppShell";
 
-const inter = Inter({
-  variable: "--font-inter",
+const hanaleiFill = Hanalei_Fill({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-hanalei",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className="h-full">
         <body
-          className={`${inter.variable} font-sans bg-background text-foreground antialiased`}
+          className={`${hanaleiFill.variable} font-hanalei bg-background text-foreground antialiased`}
           suppressHydrationWarning
         >
           <AppShell>{children}</AppShell>

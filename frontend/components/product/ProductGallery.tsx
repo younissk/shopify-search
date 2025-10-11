@@ -15,7 +15,7 @@ interface ProductGalleryProps {
   title: string;
 }
 
-const fallbackImage = "https://placehold.co/800x800";
+const fallbackImage = "/Placeholder.png";
 
 export function ProductGallery({
   images,

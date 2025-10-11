@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Menu,
   X,
-  Home,
-  Compass,
-  Info,
   Settings,
 } from "lucide-react";
 import {
@@ -44,7 +42,7 @@ export function AppBar({ className }: AppBarProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full backdrop-blur-[var(--blur-medium)] border-b border-[var(--border)] bg-[var(--gradient-surface)] shadow-[var(--shadow-soft)]",
+        "sticky top-0 z-50 w-full border-b-4 border-dashed border-[var(--border)] bg-[#824026]",
         className
       )}
     >
@@ -56,8 +54,15 @@ export function AppBar({ className }: AppBarProps) {
               href="/"
               className="flex items-center space-x-2 text-xl font-bold text-secondary transition-colors hover:text-primary"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent">
-                <Compass className="h-5 w-5 text-white" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
+                <Image
+                  src="/logo.png"
+                  alt="Shopify Search Logo"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                  priority
+                />
               </div>
               <span className="hidden sm:block">Shopify Search</span>
             </Link>

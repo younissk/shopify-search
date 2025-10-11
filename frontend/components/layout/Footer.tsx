@@ -21,9 +21,9 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="bg-white/50 backdrop-blur-sm">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mt-12 border-t pt-8">
+    <footer className="bg-[#824026] border-t-4 border-dashed border-[var(--border)]">
+      <div className="mx-auto max-w-7xl px-4 pb-12 sm:pb-6 lg:pb-8">
+        <div className="">
           <div className="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0">
             <div className="flex items-center space-x-4 text-sm text-[var(--color-foreground-soft)]">
               <span>{new Date().getFullYear()} Shopify Search.</span>
