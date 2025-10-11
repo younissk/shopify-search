@@ -1,23 +1,4 @@
-import Link from "next/link";
-import { Compass, Mail, Github, Twitter, ExternalLink } from "lucide-react";
-
-const footerLinks = {
-  product: [
-    { name: "Search", href: "/search" },
-    { name: "Stores", href: "/domains" },
-    { name: "About", href: "/about" },
-  ],
-  support: [
-    { name: "Domain Requests", href: "/domain-requests" },
-    { name: "Contact Support", href: "mailto:support@shopifysearch.com" },
-    { name: "Documentation", href: "#" },
-  ],
-  legal: [
-    { name: "Privacy Policy", href: "#" },
-    { name: "Terms of Service", href: "#" },
-    { name: "Cookie Policy", href: "#" },
-  ],
-};
+import { Github, ExternalLink } from "lucide-react";
 
 export function Footer() {
   return (

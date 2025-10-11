@@ -1,6 +1,5 @@
 import { 
   createDomainRequest, 
-  updateDomainRequest, 
   getDomainRequests,
   approveDomainRequest,
   rejectDomainRequest,

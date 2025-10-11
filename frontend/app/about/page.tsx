@@ -1,55 +1,7 @@
 import { PageContainer } from "@/components/layout/PageContainer";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  CheckCircle,
-  Search,
-  Store,
-  BarChart3,
-  Zap,
-  Shield,
-  Globe,
-} from "lucide-react";
-
-const features = [
-  {
-    icon: Search,
-    title: "Advanced Search",
-    description:
-      "Powerful search across multiple Shopify stores with intelligent filtering and ranking.",
-  },
-  {
-    icon: Store,
-    title: "Multi-Store Support",
-    description:
-      "Search across hundreds of Shopify stores from a single interface.",
-  },
-  {
-    icon: BarChart3,
-    title: "Analytics & Insights",
-    description:
-      "Comprehensive statistics and insights about products and stores.",
-  },
-  {
-    icon: Zap,
-    title: "Fast Performance",
-    description:
-      "Lightning-fast search results powered by optimized indexing and caching.",
-  },
-  {
-    icon: Shield,
-    title: "Privacy Focused",
-    description:
-      "Respects store privacy while providing valuable search capabilities.",
-  },
-  {
-    icon: Globe,
-    title: "Global Reach",
-    description:
-      "Access products from stores worldwide with localized search results.",
-  },
-];
+import { CheckCircle } from "lucide-react";
 
 const changelog = [
   {

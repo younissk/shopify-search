@@ -38,8 +38,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const formattedPrice = formatPrice(price);
   const fallbackImage = "/Placeholder.png";
-  const productHref = `s/${domain}/products/${id}`;
-  const storeHref = `/domains/${domain}`;
+  const productHref = `domains/${domain}/products/${id}`;
   const displayDomain = shortenDomain(domain, 26);
 
   return (

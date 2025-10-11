@@ -81,7 +81,7 @@ class SearchCache {
     console.log(`🗄️ [CACHE] Cache cleared`);
   }
 
-  prefetch(_query: string, _domain?: string): void {
+  prefetch(): void {
     // TODO: Implement prefetching logic for partial queries
     // This would fetch results for common prefixes/variations
   }

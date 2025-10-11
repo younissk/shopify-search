@@ -1,8 +1,8 @@
 import { AlertCircle, Store } from "lucide-react";
+import Link from "next/link";
 
 import { DomainCard } from "@/components/DomainCard";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { PaginationControls } from "@/components/navigation/PaginationControls";
 import { StateCard } from "@/components/feedback/StateCard";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export default async function DomainsPage({ searchParams }: DomainsPageProps) {
           description="Something went wrong while fetching the store directory. Please try again in a moment."
           action={
             <Button variant="outline" asChild>
-              <a href="/domains">Refresh page</a>
+              <Link href="/domains">Refresh page</Link>
             </Button>
           }
         />

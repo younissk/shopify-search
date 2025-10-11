@@ -4,7 +4,6 @@ import { ExternalLink, Package, Store, TrendingUp } from "lucide-react";
 import { Domain } from "@/types/Domain";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 interface DomainCardProps {
   domain: Domain;
