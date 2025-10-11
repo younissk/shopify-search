@@ -31,7 +31,7 @@ export function PaginationControls({
     <nav
       aria-label="Pagination"
       className={cn(
-        "mt-12 flex flex-wrap items-center justify-center gap-4 rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-4 shadow-sm",
+        "mt-12 flex flex-wrap items-center justify-center gap-4  px-6 py-4 shadow-sm",
         className
       )}
     >
@@ -41,9 +41,9 @@ export function PaginationControls({
         </Button>
       ) : null}
 
-      <div className="inline-flex items-center gap-3 rounded-full border border-[rgba(15,23,42,0.1)] bg-white px-5 py-2 text-sm font-medium text-[var(--color-foreground-soft)] shadow-sm">
+      <div className="inline-flex items-center gap-3 rounded-full border border-primary px-5 py-2 text-sm font-medium text-[var(--color-foreground-soft)] shadow-sm">
         <span>Page</span>
-        <span className="rounded-full bg-primary px-3 py-1 text-primary-foreground shadow-sm">
+        <span className="rounded-full bg-primary px-3 py-1 text-secondary shadow-sm">
           {currentPage}
         </span>
         <span>of</span>

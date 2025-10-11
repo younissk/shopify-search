@@ -96,14 +96,9 @@ export default function DomainRequestsPage() {
 
   return (
     <PageContainer className="space-y-12">
-      <PageHeader
-        eyebrow="Domain Management"
-        title="Request Domain Changes"
-        description="Request to add or remove Shopify stores from our search index. We review each request to maintain quality and relevance."
-      />
 
       {/* Request Form */}
-      <Card className="border border-[rgba(15,23,42,0.08)] bg-white shadow-sm">
+      <Card className="border-2 border-dashed border-primary bg-[var(--background)] shadow-sm">
         <div className="p-6">
           <h2 className="text-xl font-semibold text-secondary mb-6">
             Submit a Request
@@ -154,11 +149,11 @@ export default function DomainRequestsPage() {
                 </label>
                 <Input
                   id="requesterName"
+                  className="border-2 border-dashed border-primary bg-[var(--background)] shadow-sm w-full"
                   type="text"
                   placeholder="John Doe"
                   value={requesterName}
                   onChange={(e) => setRequesterName(e.target.value)}
-                  className="w-full"
                 />
                 <p className="text-xs text-[var(--color-foreground-soft)]">
                   Optional - helps us contact you if needed

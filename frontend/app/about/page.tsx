@@ -53,6 +53,15 @@ const features = [
 
 const changelog = [
   {
+    version: "0.1.1",
+    date: "2025-10-11",
+    changes: [
+      "Made the site look a lot prettier with my own, non-AI design",
+      "Added a bunch of domains (32k) for possible future scraping",
+      "Added the functionality to request domain changes",
+    ],
+  },
+  {
     version: "0.1.0",
     date: "2025-10-08",
     changes: [
@@ -61,46 +70,18 @@ const changelog = [
       "Added Similar Products Search using SentenceBERT Embeddings",
     ],
   },
+
 ];
 
 export default function AboutPage() {
   return (
     <PageContainer className="space-y-12">
-      <PageHeader
-        eyebrow="About the project"
-        title="Shopify Search"
-        description="A powerful search engine that indexes and searches across multiple Shopify stores, helping users discover products from various merchants in one place."
-      />
-
-      {/* Features Section */}
-      <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-secondary">Key Features</h2>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <Card
-                key={index}
-                className="p-6 border border-[rgba(15,23,42,0.08)] bg-white shadow-sm"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-secondary mb-2">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm text-[var(--color-foreground-soft)]">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      </section>
+      <p>I just kinda made this as a portfolio project. Dont sue me please.</p>
+      <p>
+        But also because Im kinda sick of using Amazon to buy things and want to
+        support smaller customers. So in a really dumb way this kinda rivals
+        amazon, but not really.
+      </p>
 
       {/* Changelog Section */}
       <section className="space-y-6">
@@ -109,7 +90,7 @@ export default function AboutPage() {
           {changelog.map((release, index) => (
             <Card
               key={index}
-              className="border border-[rgba(15,23,42,0.08)] bg-white shadow-sm"
+              className="border-2 border-dashed border-primary bg-[var(--background)] shadow-sm"
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -144,45 +125,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Technology Stack */}
-      <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-secondary">Technology Stack</h2>
-        <Card className="border border-[rgba(15,23,42,0.08)] bg-white shadow-sm">
-          <div className="p-6">
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div>
-                <h3 className="text-lg font-semibold text-secondary mb-3">
-                  Frontend
-                </h3>
-                <ul className="space-y-2 text-sm text-[var(--color-foreground-soft)]">
-                  <li>• Next.js 14 with App Router</li>
-                  <li>• TypeScript for type safety</li>
-                  <li>• Tailwind CSS for styling</li>
-                  <li>• Lucide React for icons</li>
-                  <li>• Supabase for data management</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-secondary mb-3">
-                  Backend
-                </h3>
-                <ul className="space-y-2 text-sm text-[var(--color-foreground-soft)]">
-                  <li>• Python for data processing</li>
-                  <li>• Supabase PostgreSQL database</li>
-                  <li>• Vector embeddings for search</li>
-                  <li>• Web scraping for data collection</li>
-                  <li>• RESTful API architecture</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </section>
-
       {/* Contact Section */}
       <section className="space-y-6">
         <h2 className="text-2xl font-bold text-secondary">Get in Touch</h2>
-        <Card className="border border-[rgba(15,23,42,0.08)] bg-white shadow-sm">
+        <Card className="border-2 border-dashed border-primary bg-[var(--background)] shadow-sm">
           <div className="p-6">
             <p className="text-[var(--color-foreground-soft)] mb-4">
               Have questions, suggestions, or want to request a domain to be

@@ -1,5 +1,6 @@
 import { supabase } from "./client";
 import { Product, ProductImage } from "@/types/Product";
+import { Domain, DomainPaginationResult } from "@/types/Domain";
 
 interface PaginationResult {
   data: Product[] | null;
@@ -9,6 +10,7 @@ interface PaginationResult {
 }
 
 export const ITEMS_PER_PAGE = 12;
+export const DOMAINS_PER_PAGE = 12;
 
 export const getProductsByDomain = async (
   domainId: string,
@@ -87,6 +89,57 @@ export const getProductsByDomain = async (
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     console.error("Error fetching products:", errorMessage);
+    return { data: null, error: errorMessage, total: 0, hasMore: false };
+  }
+};
+
+export const getDomains = async (
+  page: number = 1
+): Promise<DomainPaginationResult> => {
+  try {
+    // Calculate start and end for pagination
+    const start = (page - 1) * DOMAINS_PER_PAGE;
+    const end = start + DOMAINS_PER_PAGE - 1;
+
+    // Get total count first
+    const { count, error: countError } = await supabase
+      .from("domains")
+      .select("*", { count: "exact", head: true });
+
+    if (countError) {
+      console.error("Supabase count error:", countError);
+      return {
+        data: null,
+        error: countError.message,
+        total: 0,
+        hasMore: false,
+      };
+    }
+
+    // Get paginated data
+    const { data: domains, error } = await supabase
+      .from("domains")
+      .select("*")
+      .range(start, end)
+      .order("product_count", { ascending: false, nullsFirst: false })
+      .order("domain", { ascending: true });
+
+    if (error) {
+      console.error("Supabase error:", error);
+      return { data: null, error: error.message, total: 0, hasMore: false };
+    }
+
+    if (!domains || domains.length === 0) {
+      return { data: [], error: null, total: 0, hasMore: false };
+    }
+
+    const total = count || 0;
+    const hasMore = total > page * DOMAINS_PER_PAGE;
+
+    return { data: domains, error: null, total, hasMore };
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    console.error("Error fetching domains:", errorMessage);
     return { data: null, error: errorMessage, total: 0, hasMore: false };
   }
 };
