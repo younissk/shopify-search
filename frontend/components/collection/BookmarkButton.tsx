@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Gem } from "lucide-react";
 import { useAuth, useClerk } from "@clerk/nextjs";
 
@@ -28,15 +28,9 @@ export function BookmarkButton({
   const { openSignIn } = useClerk();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
-  useEffect(() => {
-    if (isSignedIn) {
-      checkBookmarkStatus();
-    }
-  }, [isSignedIn, productId, domain]);
-
-  const checkBookmarkStatus = async () => {
+  const checkBookmarkStatus = useCallback(async () => {
     try {
       const result = await getProductCollections(productId, domain);
       if (result.data && result.data.length > 0) {
@@ -47,7 +41,13 @@ export function BookmarkButton({
     } catch (error) {
       console.error("Error checking bookmark status:", error);
     }
-  };
+  }, [productId, domain]);
+
+  useEffect(() => {
+    if (isSignedIn) {
+      checkBookmarkStatus();
+    }
+  }, [isSignedIn, checkBookmarkStatus]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();

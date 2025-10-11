@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import { Loader2, Trash2 } from "lucide-react";
 
 import { PageContainer } from "@/components/layout/PageContainer";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,11 +45,7 @@ export default function EditCollectionPage({ params }: EditCollectionPageProps) 
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(false);
 
-  useEffect(() => {
-    loadCollection();
-  }, []);
-
-  const loadCollection = async () => {
+  const loadCollection = useCallback(async () => {
     const resolvedParams = await params;
     const result = await getCollectionBySlug(resolvedParams.slug);
 
@@ -70,7 +65,11 @@ export default function EditCollectionPage({ params }: EditCollectionPageProps) 
     setDescription(result.data.description || "");
     setIsPublic(result.data.is_public);
     setLoading(false);
-  };
+  }, [params, router, userId]);
+
+  useEffect(() => {
+    loadCollection();
+  }, [loadCollection]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

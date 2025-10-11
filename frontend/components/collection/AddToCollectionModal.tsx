@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Check, Loader2, Plus, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -44,13 +44,7 @@ export function AddToCollectionModal({
   const [newCollectionName, setNewCollectionName] = useState("");
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (isOpen) {
-      loadData();
-    }
-  }, [isOpen, productId, domain]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const [collectionsResult, productCollectionsResult] = await Promise.all([
@@ -71,7 +65,13 @@ export function AddToCollectionModal({
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId, domain]);
+
+  useEffect(() => {
+    if (isOpen) {
+      loadData();
+    }
+  }, [isOpen, loadData]);
 
   const handleToggleCollection = async (collection: Collection) => {
     const collectionId = collection.id;

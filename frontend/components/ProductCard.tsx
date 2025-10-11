@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { cn, shortenDomain } from "@/lib/utils";
-import { BookmarkButton } from "@/components/collection/BookmarkButton";
 
 interface ProductCardProps {
   title: string;

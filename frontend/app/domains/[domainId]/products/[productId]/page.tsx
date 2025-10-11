@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AlertCircle, Loader2, Sparkles } from "lucide-react";
 
 import { PageContainer } from "@/components/layout/PageContainer";

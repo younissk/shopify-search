@@ -1,18 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
-import { Gem, Settings } from "lucide-react";
 
 import { ParallaxBackground } from "@/components/ParallaxBackground";
-import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/SearchBar";
 
 export default function Home() {
