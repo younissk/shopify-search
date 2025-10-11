@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { cn, shortenDomain } from "@/lib/utils";
+import { BookmarkButton } from "@/components/collection/BookmarkButton";
 
 interface ProductCardProps {
   title: string;
@@ -51,7 +52,7 @@ export default function ProductCard({
     >
       <Link
         href={productHref}
-        className="relative block aspect-[3/2.7] min-h-[285px] max-h-[340px] overflow-hidden mb-2"
+        className="relative block aspect-[3/2.7] min-h-[285px] max-h-[340px] overflow-hidden mb-2 bg-[var(--primary)] rounded-t-sm"
       >
         <Image
           src={image || fallbackImage}
@@ -61,6 +62,11 @@ export default function ProductCard({
           sizes="(min-width: 1280px) 20vw, (min-width: 768px) 30vw, 100vw"
           priority={false}
         />
+
+        {/* Bookmark button - top left */}
+        <div className="absolute top-2 left-2 z-10">
+          <BookmarkButton productId={id} domain={domain} size="sm" />
+        </div>
 
         {/* Domain overlay - bottom left */}
         <span

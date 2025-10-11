@@ -11,6 +11,7 @@ import { getProduct, getSimilarProducts } from "@/supabase/product";
 import ProductCard from "@/components/ProductCard";
 import { Product, ProductImage, ProductVariant } from "@/types/Product";
 import Pill from "@/components/ui/pill";
+import { BookmarkButton } from "@/components/collection/BookmarkButton";
 
 interface ProductPageProps {
   params: Promise<{
@@ -193,12 +194,21 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
 
         <div className="min-w-[220px]">
-          <p className="text-md text-[var(--secondary)]">
-            {`by ${product.vendor || "Unknown vendor"}`}
-          </p>
-          <h1 className="text-3xl font-semibold text-[var(--primary)]">
-            {product.title}
-          </h1>
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <div className="flex-1">
+              <p className="text-md text-[var(--secondary)]">
+                {`by ${product.vendor || "Unknown vendor"}`}
+              </p>
+              <h1 className="text-3xl font-semibold text-[var(--primary)]">
+                {product.title}
+              </h1>
+            </div>
+            <BookmarkButton
+              productId={String(product.product_id)}
+              domain={product.domain}
+              size="lg"
+            />
+          </div>
 
           <div className="mt-3 text-3xl font-semibold text-foreground mb-3">
             {priceLabel}
@@ -222,22 +232,21 @@ export default function ProductPage({ params }: ProductPageProps) {
             />
           </div>
         </div>
-
-        <section className="space-y-4">
-          <p className="text-sm text-[var(--secondary)]">ProductDescription</p>
-          {descriptionHtml && (
-            <div
-              className="rich-text max-h-96 overflow-y-auto pr-2"
-              style={{
-                // fallback if the Tailwind classes aren't enough
-                wordBreak: 'break-word',
-                overscrollBehavior: 'contain'
-              }}
-              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-            />
-          )}
-        </section>
       </div>
+      <section className="space-y-4 w-full">
+        <p className="text-3xl font-semibold mt-4 text-[var(--primary)]">ProductDescription</p>
+        {descriptionHtml && (
+          <div
+            className="rich-text max-h-96 overflow-y-auto pr-2"
+            style={{
+              // fallback if the Tailwind classes aren't enough
+              wordBreak: "break-word",
+              overscrollBehavior: "contain",
+            }}
+            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+          />
+        )}
+      </section>
 
       {/* <ProductMetaBar updatedAt={product.updated_at} domain={product.domain} /> */}
 

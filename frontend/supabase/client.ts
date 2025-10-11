@@ -11,4 +11,5 @@ if (!supabaseUrl || !supabaseKey) {
   );
 }
 
+// Unauthenticated client for public data
 export const supabase = createClient(supabaseUrl, supabaseKey);

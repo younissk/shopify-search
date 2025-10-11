@@ -8,6 +8,7 @@ import {
   Menu,
   X,
   Settings,
+  Gem,
 } from "lucide-react";
 import {
   SignInButton,
@@ -27,6 +28,10 @@ interface AppBarProps {
 
 const navigation = [
   { name: "Domains", href: "/domains", icon: Settings },
+];
+
+const authNavigation = [
+  { name: "Collections", href: "/collections", icon: Gem },
 ];
 
 export function AppBar({ className }: AppBarProps) {
@@ -99,6 +104,30 @@ export function AppBar({ className }: AppBarProps) {
                 </Link>
               );
             })}
+
+            {/* Auth-only navigation */}
+            <SignedIn>
+              {authNavigation.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center space-x-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+                      isActive
+                        ? "bg-primary/10 text-primary shadow-sm"
+                        : "text-[var(--color-foreground-soft)] hover:bg-[var(--color-overlay)] hover:text-secondary"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </SignedIn>
             
             {/* Authentication */}
             <div className="ml-4 flex items-center space-x-2">
@@ -146,7 +175,7 @@ export function AppBar({ className }: AppBarProps) {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden">
-            <div className="space-y-1 border-t border-[var(--border)] bg-white/50 px-2 py-4 backdrop-blur-sm">
+            <div className="space-y-1 bopx-2 py-4 backdrop-blur-sm">
               {/* Mobile Navigation Links */}
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
@@ -169,6 +198,31 @@ export function AppBar({ className }: AppBarProps) {
                   </Link>
                 );
               })}
+
+              {/* Mobile Auth-only navigation */}
+              <SignedIn>
+                {authNavigation.map((item) => {
+                  const isActive = pathname === item.href;
+                  const Icon = item.icon;
+
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "flex items-center space-x-3 rounded-lg px-3 py-3 text-sm font-medium transition-all duration-200",
+                        isActive
+                          ? "bg-primary/10 text-primary"
+                          : "text-[var(--color-foreground-soft)] hover:bg-[var(--color-overlay)] hover:text-secondary"
+                      )}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </SignedIn>
               
               {/* Mobile Authentication */}
               <div className="border-t border-[var(--border)] pt-4 mt-4">

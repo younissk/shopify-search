@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PageContainer } from "@/components/layout/PageContainer";
+import { ParallaxBackground } from "@/components/ParallaxBackground";
 import { Button } from "@/components/ui/button";
 import { getTotalProductCount, getTotalDomainCount, formatCount } from "@/lib/counts";
 
@@ -27,7 +28,9 @@ export default async function Home() {
     : formatCount(domainCountResult.count, domainCountResult.isApproximate);
 
   return (
-    <PageContainer className="flex min-h-[60vh] flex-col items-center justify-center gap-12 text-center">
+    <>
+      <ParallaxBackground />
+      <PageContainer className="flex min-h-[60vh] flex-col items-center justify-center gap-12 text-center">
       <div className="space-y-6">
         <span className="pill-badge">Unified Shopify catalogue</span>
         <h1 className="text-4xl font-semibold tracking-tight text-secondary sm:text-5xl">
@@ -64,5 +67,6 @@ export default async function Home() {
         </Button>
       </div>
     </PageContainer>
+    </>
   );
 }

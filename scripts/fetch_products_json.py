@@ -18,7 +18,7 @@ except Exception:  # pragma: no cover
     create_client = None
     Client = None
 
-# Last unsuccessful: thesoapopera.com
+# Last unsuccessful: cloud9wigs.com
 
 @dataclass
 class ScrapingStats:
