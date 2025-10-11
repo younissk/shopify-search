@@ -24,7 +24,7 @@ export function PageContainer({
       className={cn(
         "w-full",
         inset &&
-          "relative overflow-hidden rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white p-6 shadow-[var(--shadow-medium)]",
+          "relative overflow-hidden",
         className
       )}
     >

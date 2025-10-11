@@ -1,23 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, Loader2, ShoppingCart, Sparkles } from "lucide-react";
+import { AlertCircle, Loader2, Sparkles } from "lucide-react";
 
 import { PageContainer } from "@/components/layout/PageContainer";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { StateCard } from "@/components/feedback/StateCard";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductVariantSelector } from "@/components/product/ProductVariantSelector";
-import {
-  ProductOptionsList,
-  type ProductOptionsListProps,
-} from "@/components/product/ProductOptionsList";
-import { ProductMetaBar } from "@/components/product/ProductMetaBar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { getProduct, getSimilarProducts } from "@/supabase/product";
 import ProductCard from "@/components/ProductCard";
 import { Product, ProductImage, ProductVariant } from "@/types/Product";
+import Pill from "@/components/ui/pill";
 
 interface ProductPageProps {
   params: Promise<{
@@ -50,7 +43,9 @@ export default function ProductPage({ params }: ProductPageProps) {
     null
   );
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [similarProducts, setSimilarProducts] = useState<Product[] | null>(null);
+  const [similarProducts, setSimilarProducts] = useState<Product[] | null>(
+    null
+  );
   const [loadingSimilar, setLoadingSimilar] = useState(true);
 
   useEffect(() => {
@@ -82,18 +77,19 @@ export default function ProductPage({ params }: ProductPageProps) {
 
         // Fetch similar products
         if (fetchedProduct) {
-          const { data: similar, error: similarError } = await getSimilarProducts({
-            product_id: String(fetchedProduct.product_id), // Ensure product_id is a string
-            domain: fetchedProduct.domain,
-            k: 4
-          });
-          
-          console.log('Similar products response:', { similar, similarError });
-          
+          const { data: similar, error: similarError } =
+            await getSimilarProducts({
+              product_id: String(fetchedProduct.product_id), // Ensure product_id is a string
+              domain: fetchedProduct.domain,
+              k: 4,
+            });
+
+          console.log("Similar products response:", { similar, similarError });
+
           if (similarError) {
-            console.error('Error fetching similar products:', similarError);
+            console.error("Error fetching similar products:", similarError);
           } else if (similar) {
-            console.log('Setting similar products:', similar);
+            console.log("Setting similar products:", similar);
             setSimilarProducts(similar);
           }
         }
@@ -123,12 +119,14 @@ export default function ProductPage({ params }: ProductPageProps) {
       return product.images;
     }
     if (product?.raw_json?.images?.length) {
-      return (product.raw_json.images as Array<{
-        src: string;
-        position: number;
-        id: number;
-        alt?: string;
-      }>).map((image) => ({
+      return (
+        product.raw_json.images as Array<{
+          src: string;
+          position: number;
+          id: number;
+          alt?: string;
+        }>
+      ).map((image) => ({
         domain: product?.domain ?? "",
         product_id: product?.product_id ?? 0,
         image_id: image.id,
@@ -140,11 +138,6 @@ export default function ProductPage({ params }: ProductPageProps) {
     return [];
   }, [product]);
 
-  const options = useMemo(
-    () => (product?.raw_json?.options as ProductOptionsListProps["options"] | undefined) ?? [],
-    [product?.raw_json?.options]
-  );
-
   const currentVariant = selectedVariant || variants[0] || null;
 
   const handleVariantSelect = (variant: ProductVariant) => {
@@ -155,9 +148,8 @@ export default function ProductPage({ params }: ProductPageProps) {
     setCurrentImageIndex(index);
   };
 
-  const descriptionHtml = (product?.raw_json?.body_html || product?.body_html) as
-    | string
-    | undefined;
+  const descriptionHtml = (product?.raw_json?.body_html ||
+    product?.body_html) as string | undefined;
 
   if (loading) {
     return (
@@ -189,65 +181,27 @@ export default function ProductPage({ params }: ProductPageProps) {
   );
 
   return (
-    <PageContainer className="space-y-12">
-      <PageHeader
-        eyebrow="Product spotlight"
-        title={product.title}
-        description={`by ${product.vendor || "Unknown vendor"}`}
-        meta={
-          <div className="min-w-[220px] rounded-[var(--radius-lg)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-4 text-left shadow-sm">
-            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-foreground-soft)]">
-              Current price
-            </span>
-            <div className="mt-3 text-3xl font-semibold text-foreground">
-              {priceLabel}
-            </div>
-            {currentVariant ? (
-              <span className="mt-1 block text-xs text-[var(--color-foreground-soft)]">
-                Selected variant: {currentVariant.title}
-              </span>
-            ) : null}
-          </div>
-        }
-      />
+    <PageContainer className="pb-20 md:pb-0">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+        <div className="w-full overflow-hidden">
+          <ProductGallery
+            images={productImages}
+            currentIndex={currentImageIndex}
+            onSelect={handleImageSelect}
+            title={product.title}
+          />
+        </div>
 
-      <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
-        <ProductGallery
-          images={productImages}
-          currentIndex={currentImageIndex}
-          onSelect={handleImageSelect}
-          title={product.title}
-        />
+        <div className="min-w-[220px]">
+          <p className="text-md text-[var(--secondary)]">
+            {`by ${product.vendor || "Unknown vendor"}`}
+          </p>
+          <h1 className="text-3xl font-semibold text-[var(--primary)]">
+            {product.title}
+          </h1>
 
-        <div className="flex flex-col gap-8">
-          <div className="rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-6 shadow-sm">
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge
-                variant="outline"
-                className="rounded-full border-[rgba(15,23,42,0.12)] bg-white px-4 py-2 text-xs uppercase tracking-[0.22em] text-[var(--color-foreground-soft)]"
-              >
-                {product.domain}
-              </Badge>
-              {currentVariant ? (
-                <span className="rounded-full border border-[rgba(15,23,42,0.12)] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-foreground-soft)]">
-                  {currentVariant.title}
-                </span>
-              ) : null}
-            </div>
-            <p className="text-base leading-relaxed text-[var(--color-foreground-soft)]">
-              Select a variant to explore materials, sizing, and real-time pricing direct from the Shopify catalogue.
-            </p>
-            <Button asChild size="lg" className="w-full gap-2">
-              <a
-                href={`https://${product.domain}/products/${product.handle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center gap-2"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                View product on store
-              </a>
-            </Button>
+          <div className="mt-3 text-3xl font-semibold text-foreground mb-3">
+            {priceLabel}
           </div>
 
           <ProductVariantSelector
@@ -256,55 +210,76 @@ export default function ProductPage({ params }: ProductPageProps) {
             onSelect={handleVariantSelect}
           />
 
-          <ProductOptionsList options={options} />
+          <div className="hidden md:flex flex-col gap-8 my-8">
+            <Pill
+              text="View product on store"
+              onClick={() => {
+                window.open(
+                  `https://${product.domain}/products/${product.handle}`,
+                  "_blank"
+                );
+              }}
+            />
+          </div>
         </div>
+
+        <section className="space-y-4">
+          {descriptionHtml && (
+            <div
+              className="rich-text"
+              dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+            />
+          )}
+        </section>
       </div>
 
-      <section className="rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-8 shadow-sm space-y-4">
-        <h2 className="text-2xl font-semibold text-foreground">
-          Product description
-        </h2>
-        {descriptionHtml ? (
-          <div className="rich-text" dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-        ) : (
-          <div className="rounded-[var(--radius-lg)] border border-[rgba(15,23,42,0.08)] bg-[rgba(248,250,252,0.8)] px-6 py-5 text-[var(--color-foreground-soft)]">
-            Discover exquisite craftsmanship and comfort engineered for everyday living.
-          </div>
-        )}
-      </section>
-
-      <ProductMetaBar updatedAt={product.updated_at} domain={product.domain} />
+      {/* <ProductMetaBar updatedAt={product.updated_at} domain={product.domain} /> */}
 
       {/* Similar Products Section */}
-      <section className="rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-white px-6 py-8 shadow-sm space-y-6">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-semibold text-foreground">Similar Products</h2>
-        </div>
-        
-        {loadingSimilar ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      {(loadingSimilar ||
+        (Array.isArray(similarProducts) && similarProducts.length > 0)) && (
+        <section className="px-6 py-8 shadow-sm space-y-6">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-primary" />
+            <h2 className="text-2xl font-semibold text-foreground">
+              Similar Products
+            </h2>
           </div>
-        ) : Array.isArray(similarProducts) && similarProducts.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {similarProducts.map((similarProduct) => (
-              <ProductCard
-                key={similarProduct.product_id}
-                id={String(similarProduct.product_id)}
-                title={similarProduct.title}
-                price={similarProduct.variants?.[0]?.price ?? "N/A"}
-                domain={similarProduct.domain}
-                image={similarProduct.images?.[0]?.src}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-[var(--radius-lg)] border border-[rgba(15,23,42,0.08)] bg-[rgba(248,250,252,0.8)] px-6 py-5 text-[var(--color-foreground-soft)]">
-            No similar products found at this time.
-          </div>
-        )}
-      </section>
+
+          {loadingSimilar ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {similarProducts?.map((similarProduct) => (
+                <ProductCard
+                  key={similarProduct.product_id}
+                  id={String(similarProduct.product_id)}
+                  title={similarProduct.title}
+                  price={similarProduct.variants?.[0]?.price ?? "N/A"}
+                  domain={similarProduct.domain}
+                  image={similarProduct.images?.[0]?.src}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Mobile Fixed Button */}
+      <div className="md:hidden">
+        <Pill
+          text="To the Store"
+          fixed={true}
+          onClick={() => {
+            window.open(
+              `https://${product.domain}/products/${product.handle}`,
+              "_blank"
+            );
+          }}
+        />
+      </div>
     </PageContainer>
   );
 }

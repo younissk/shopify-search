@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { useState } from "react";
+import { Maximize2, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -24,10 +26,11 @@ export function ProductGallery({
   title,
 }: ProductGalleryProps) {
   const activeImage = images[currentIndex];
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
-    <div className="space-y-6">
-      <div className="relative aspect-square overflow-hidden rounded-[var(--radius-xl)] border border-[rgba(15,23,42,0.08)] bg-[rgba(226,232,240,0.4)] shadow-[var(--shadow-medium)]">
+    <>
+      <div className="relative aspect-square w-full max-w-screen overflow-hidden  sm:max-w-none">
         <Image
           src={activeImage?.src || fallbackImage}
           alt={activeImage?.alt || title}
@@ -38,10 +41,18 @@ export function ProductGallery({
         />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/70 via-black/40 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-      </div>
-
+        
+        {/* Fullscreen button */}
+        <button
+          onClick={() => setIsFullscreen(true)}
+          className="absolute top-0 right-0 flex h-10 w-10 items-center justify-center rounded-xs bg-[var(--primary)] backdrop-blur-sm text-white transition-all hover:bg-black/70 hover:scale-105 border-2 border-dashed border-[var(--background)]"
+          aria-label="View image in fullscreen"
+        >
+          <Maximize2 className="h-5 w-5" />
+        </button>
+      
       {images.length > 1 ? (
-        <div className="flex gap-3 overflow-x-auto pb-1">
+        <div className="absolute bottom-4 left-4 right-4 flex gap-2 overflow-x-auto pb-1">
           {images.map((image, index) => {
             const isActive = index === currentIndex;
 
@@ -51,21 +62,21 @@ export function ProductGallery({
                 type="button"
                 onClick={() => onSelect(index)}
                 className={cn(
-                  "group relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[var(--radius)] border border-[rgba(15,23,42,0.08)] bg-white transition",
-                  isActive && "ring-2 ring-primary/60"
+                  "group relative h-16 w-16 flex-shrink-0 overflow-hidden border-2 border-dashed border-[var(--background)] transition-all hover:bg-white/20",
+                  isActive && "border-white ring-2 ring-white/50"
                 )}
               >
                 <span
                   className={cn(
-                    "pointer-events-none absolute inset-0 rounded-[var(--radius)] bg-gradient-to-br from-white/40 via-transparent to-white/10 opacity-0 transition-opacity group-hover:opacity-60",
-                    isActive && "opacity-90"
+                    "pointer-events-none absolute inset-0 rounded-lg bg-white/20 opacity-0 transition-opacity group-hover:opacity-100",
+                    isActive && "opacity-60"
                   )}
                 />
                 <Image
                   src={image.src}
                   alt={image.alt || title}
-                  width={80}
-                  height={80}
+                  width={64}
+                  height={64}
                   className="h-full w-full object-cover"
                 />
               </button>
@@ -73,6 +84,30 @@ export function ProductGallery({
           })}
         </div>
       ) : null}
-    </div>
+      </div>
+
+      {/* Fullscreen Modal */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+          <div className="relative max-h-[90vh] max-w-[90vw]">
+            <Image
+              src={activeImage?.src || fallbackImage}
+              alt={activeImage?.alt || title}
+              width={1200}
+              height={1200}
+              className="max-h-[90vh] max-w-[90vw] object-contain"
+              priority
+            />
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 backdrop-blur-sm text-white transition-all hover:bg-black/70 hover:scale-105"
+              aria-label="Close fullscreen"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
