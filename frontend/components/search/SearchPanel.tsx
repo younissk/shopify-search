@@ -41,7 +41,7 @@ export function SearchPanel({
     }
 
     const trimmed = value.trim();
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
 
     if (trimmed) {
       params.set("query", trimmed);

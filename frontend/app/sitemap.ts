@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { createClient } from "@/supabase/server";
+import { supabase } from "@/supabase/client";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://shopifysearch.com";
@@ -40,7 +40,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     // Fetch top domains for dynamic sitemap entries
-    const supabase = await createClient();
     const { data: domains } = await supabase
       .from("domains")
       .select("domain, updated_at")

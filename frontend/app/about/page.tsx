@@ -46,9 +46,9 @@ export default function AboutPage() {
       <div className="space-y-6">
         <h1 className="text-4xl font-bold text-primary">About Shopify Search</h1>
         <div className="space-y-4 text-lg text-[var(--color-foreground-soft)]">
-          <p>I just kinda made this as a portfolio project. Don't sue me please.</p>
+          <p>I just kinda made this as a portfolio project. Don&apos;t sue me please.</p>
           <p>
-            But also because I'm kinda sick of using Amazon to buy things and want to
+            But also because I&apos;m kinda sick of using Amazon to buy things and want to
             support smaller customers. So in a really dumb way this kinda rivals
             Amazon, but not really.
           </p>

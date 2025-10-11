@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Menu,
   X,
@@ -37,10 +37,11 @@ const authNavigation = [
 export function AppBar({ className }: AppBarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleSearch = (query: string) => {
     if (query.trim()) {
-      window.location.href = `/search?query=${encodeURIComponent(query)}`;
+      router.push(`/search?query=${encodeURIComponent(query)}`);
     }
   };
 

@@ -60,11 +60,11 @@ export function SearchExperience({
   }, [initialError, initialQuery, initialResults]);
 
   useEffect(() => {
-    const handle = window.setTimeout(() => {
+    const handle = setTimeout(() => {
       setDebouncedQuery(query);
     }, DEBOUNCE_MS);
 
-    return () => window.clearTimeout(handle);
+    return () => clearTimeout(handle);
   }, [query]);
 
   useEffect(() => {

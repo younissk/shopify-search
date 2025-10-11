@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { AlertCircle, Loader2, Sparkles } from "lucide-react";
-import type { Metadata } from "next";
 
 import { PageContainer } from "@/components/layout/PageContainer";
 import { StateCard } from "@/components/feedback/StateCard";
