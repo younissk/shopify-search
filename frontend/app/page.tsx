@@ -7,8 +7,12 @@ import { getTotalProductCount, getTotalDomainCount, formatCount } from "@/lib/co
 // Note: This page requires the PostgreSQL counting functions to be installed.
 // Run: sql/counting_functions.sql in your Supabase SQL editor
 
+// Force static generation - data is fetched at build time
+export const dynamic = 'force-static';
+
 export default async function Home() {
   // Fetch counts in parallel for better performance
+  // This will only run at build time, not on every request
   const [productCountResult, domainCountResult] = await Promise.all([
     getTotalProductCount(),
     getTotalDomainCount(),
