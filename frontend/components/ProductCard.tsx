@@ -52,28 +52,27 @@ export default function ProductCard({
     >
       <Link
         href={productHref}
-        className="relative block aspect-[3/2] overflow-hidden mb-2"
+        className="relative block aspect-[3/2.7] min-h-[285px] max-h-[340px] overflow-hidden mb-2"
       >
         <Image
           src={image || fallbackImage}
           alt={title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-[1.03] rounded-t-sm border-b-4 border-dashed border-[var(--secondary)]"
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03] rounded-t-sm"
           sizes="(min-width: 1280px) 20vw, (min-width: 768px) 30vw, 100vw"
           priority={false}
         />
-        
+
         {/* Domain overlay - bottom left */}
-        <Link
-          href={storeHref}
-          className="absolute bottom-2 left-2 rounded-md bg-black/70 px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-opacity hover:bg-black/80"
+        <span
+          className="absolute bottom-0 left-0 bg-[var(--primary)] border-2 border-dashed border-[var(--background)] px-2 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-opacity hover:bg-black/80"
           title={domain}
         >
           {displayDomain}
-        </Link>
-        
+        </span>
+
         {/* Price overlay - top right */}
-        <span className="absolute top-2 right-2 rounded-md bg-black/70 px-2 py-1 text-sm font-semibold text-white backdrop-blur-sm">
+        <span className="absolute top-0 right-0 bg-[var(--primary)] border-2 border-dashed border-[var(--background)] px-2 py-1 text-sm font-semibold text-white backdrop-blur-sm">
           {formattedPrice}
         </span>
       </Link>
