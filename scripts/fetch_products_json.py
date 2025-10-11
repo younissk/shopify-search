@@ -182,69 +182,6 @@ class SupabaseWriter:
     def _chunked(self, rows: List[Dict[str, Any]]) -> List[List[Dict[str, Any]]]:
         return [rows[i:i + self.batch_size] for i in range(0, len(rows), self.batch_size)]
 
-    def upsert_domain(self, domain: str, products: List[Dict[str, Any]], error: Optional[str] = None) -> None:
-        """Upsert domain record with statistics and scraping status."""
-        if not self.is_enabled():
-            return
-        
-        fetched_at = datetime.now(UTC).isoformat()
-        
-        # Calculate domain statistics
-        product_count = len(products)
-        vendors = set()
-        product_types = set()
-        prices = []
-        
-        for product in products:
-            # Collect vendors
-            vendor = product.get("vendor")
-            if vendor:
-                vendors.add(vendor)
-            
-            # Collect product types
-            product_type = product.get("product_type")
-            if product_type:
-                product_types.add(product_type)
-            
-            # Collect prices from variants
-            variants = product.get("variants", [])
-            for variant in variants:
-                price_str = variant.get("price")
-                if price_str:
-                    try:
-                        price = float(price_str)
-                        prices.append(price)
-                    except (ValueError, TypeError):
-                        pass
-        
-        # Calculate price range
-        price_range_min = min(prices) if prices else None
-        price_range_max = max(prices) if prices else None
-        
-        # Determine scraping status
-        scraping_status = "active" if error is None else "failed"
-        
-        domain_data = {
-            "domain": domain,
-            "product_count": product_count,
-            "vendor_count": len(vendors),
-            "product_types": list(product_types) if product_types else None,
-            "price_range_min": price_range_min,
-            "price_range_max": price_range_max,
-            "last_fetched_at": fetched_at if error is None else None,
-            "scraping_status": scraping_status,
-            "last_scrape_error": error,
-            "fetch_attempt_count": 1,  # Will be incremented by database trigger
-            "successful_fetch_count": 1 if error is None else 0,
-            "updated_at": fetched_at,
-        }
-        
-        try:
-            self._upsert("domains", [domain_data], on_conflict="domain")
-            print(f"Updated domain record for {domain}: {product_count} products, {len(vendors)} vendors")
-        except Exception as e:
-            print(f"Error updating domain record for {domain}: {e}")
-
     def upsert_products(self, products: List[Dict[str, Any]], domain: str) -> None:
         if not self.is_enabled() or not products:
             return
@@ -252,12 +189,7 @@ class SupabaseWriter:
         fetched_at = datetime.now(UTC).isoformat()
 
         product_rows: List[Dict[str, Any]] = []
-        variant_rows: List[Dict[str, Any]] = []
-        # Use dict for deduplication
         image_rows_dict: Dict[str, Dict[str, Any]] = {}
-        option_rows: List[Dict[str, Any]] = []
-        option_value_rows: List[Dict[str, Any]] = []
-        snapshot_rows: List[Dict[str, Any]] = []
 
         for p in products:
             product_id = p.get("id")
@@ -276,53 +208,12 @@ class SupabaseWriter:
                 "created_at": p.get("created_at"),
                 "updated_at": p.get("updated_at"),
                 "published_at": p.get("published_at"),
-                "status": p.get("status"),
                 "admin_graphql_api_id": p.get("admin_graphql_api_id"),
                 "template_suffix": p.get("template_suffix"),
                 "published_scope": p.get("published_scope"),
                 "fetched_at": fetched_at,
                 "raw_json": p,
             })
-
-            # Snapshot row preserves entire product JSON per fetch
-            snapshot_rows.append({
-                "domain": domain,
-                "product_id": product_id,
-                "fetched_at": fetched_at,
-                "raw_json": p,
-            })
-
-            # Variants
-            for v in p.get("variants", []) or []:
-                variant_id = v.get("id")
-                if variant_id is None:
-                    continue
-                variant_rows.append({
-                    "domain": domain,
-                    "variant_id": variant_id,
-                    "product_id": product_id,
-                    "title": v.get("title"),
-                    "sku": v.get("sku"),
-                    "price": v.get("price"),
-                    "compare_at_price": v.get("compare_at_price"),
-                    "position": v.get("position"),
-                    "inventory_policy": v.get("inventory_policy"),
-                    "inventory_management": v.get("inventory_management"),
-                    "inventory_quantity": v.get("inventory_quantity"),
-                    "barcode": v.get("barcode"),
-                    "weight": v.get("weight"),
-                    "weight_unit": v.get("weight_unit"),
-                    "requires_shipping": v.get("requires_shipping"),
-                    "taxable": v.get("taxable"),
-                    "option1": v.get("option1"),
-                    "option2": v.get("option2"),
-                    "option3": v.get("option3"),
-                    "image_id": v.get("image_id"),
-                    "created_at": v.get("created_at"),
-                    "updated_at": v.get("updated_at"),
-                    "fetched_at": fetched_at,
-                    "raw_json": v,
-                })
 
             # Images - deduplicate by domain and image_id
             for img in p.get("images", []) or []:
@@ -347,41 +238,12 @@ class SupabaseWriter:
                     "raw_json": img,
                 }
 
-            # Options and their values
-            for opt in p.get("options", []) or []:
-                option_id = opt.get("id")
-                option_rows.append({
-                    "domain": domain,
-                    "option_id": option_id,
-                    "product_id": product_id,
-                    "name": opt.get("name"),
-                    "position": opt.get("position"),
-                    "fetched_at": fetched_at,
-                    "raw_json": opt,
-                })
-                values = opt.get("values", []) or []
-                for idx, val in enumerate(values, start=1):
-                    option_value_rows.append({
-                        "domain": domain,
-                        "product_id": product_id,
-                        "option_name": opt.get("name"),
-                        "position": idx,
-                        "value": val,
-                        "fetched_at": fetched_at,
-                    })
-
         # Perform batched upserts/inserts
         for chunk in self._chunked(product_rows):
             self._upsert("products", chunk, on_conflict="domain,product_id")
-        for chunk in self._chunked(variant_rows):
-            self._upsert("variants", chunk, on_conflict="domain,variant_id")
-        # Convert deduplicated image dict to list
         image_rows = list(image_rows_dict.values())
         for chunk in self._chunked(image_rows):
             self._upsert("images", chunk, on_conflict="domain,image_id")
-        for chunk in self._chunked(option_value_rows):
-            self._upsert("option_values", chunk,
-                         on_conflict="domain,product_id,option_name,position")
 
 
 # Initialize a global writer (lazy-disabled if env is missing)
@@ -450,8 +312,6 @@ def fetch_domain_products(domain: str, stats: ScrapingStats) -> None:
                 print(
                     f"Attempting to persist {len(all_domain_products)} products for {domain}...")
                 SUPABASE_WRITER.upsert_products(all_domain_products, domain)
-                # Update domain record with statistics
-                SUPABASE_WRITER.upsert_domain(domain, all_domain_products)
                 print(
                     f"Successfully persisted {len(all_domain_products)} products for {domain} to Supabase")
         except Exception as persist_err:

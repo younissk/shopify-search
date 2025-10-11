@@ -224,9 +224,15 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
 
         <section className="space-y-4">
+          <p className="text-sm text-[var(--secondary)]">ProductDescription</p>
           {descriptionHtml && (
             <div
-              className="rich-text"
+              className="rich-text max-h-96 overflow-y-auto pr-2"
+              style={{
+                // fallback if the Tailwind classes aren't enough
+                wordBreak: 'break-word',
+                overscrollBehavior: 'contain'
+              }}
               dangerouslySetInnerHTML={{ __html: descriptionHtml }}
             />
           )}
